@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-machinelearning-plugin" version="0.0.1">
+    <name>Machine Learning</name>
+    <description>Cordova Machine Learning Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,machine learning</keywords>
+    <js-module src="www/machinelearning.js" name="machinelearning">
+        <clobbers target="machine" />
+    </js-module>
+    <asset src="www/workers" target="js/workers" />
+    <asset src="www/lib" target="js/lib" />
+    <platform name="android"></platform>
+</plugin>
