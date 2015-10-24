@@ -1,9 +1,12 @@
 
+
+
 module.exports = (function(){
     var self = this;
 
-    self.train = function(type, callback){
-        var w;
+    var w;
+    self.train = function(type, data, callback){
+
         switch(type){
             case 'knn':
                 w = new Worker('js/workers/knn.js');
@@ -12,10 +15,11 @@ module.exports = (function(){
                 w = new Worker('js/workers/svm.js');
                 break;
             default:
+                if(!w)
                 w = new Worker('js/workers/train.js');
         }
         w.onmessage = callback;
-        w.postMessage('Hello');
+        w.postMessage(data);
         return w;
     };
 

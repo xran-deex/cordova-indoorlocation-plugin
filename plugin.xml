@@ -10,5 +10,9 @@
     </js-module>
     <asset src="www/workers" target="js/workers" />
     <asset src="www/lib" target="js/lib" />
-    <platform name="android"></platform>
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <access origin="*" />
+        </config-file>
+    </platform>
 </plugin>
