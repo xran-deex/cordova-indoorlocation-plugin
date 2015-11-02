@@ -5,8 +5,16 @@
     <description>Cordova Machine Learning Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,machine learning</keywords>
+    <dependency id="cordova-plugin-geolocation" />
+    <dependency id="cordova-sensorcollector-plugin" url="../cordova-sensorcollector-plugin/" />
     <js-module src="www/machinelearning.js" name="machinelearning">
         <clobbers target="machine" />
+    </js-module>
+    <js-module src="www/helper.js" name="helper">
+        <clobbers target="helper" />
+    </js-module>
+    <js-module src="www/processor.js" name="processor">
+        <clobbers target="processor" />
     </js-module>
     <asset src="www/workers" target="js/workers" />
     <asset src="www/lib" target="js/lib" />
