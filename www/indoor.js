@@ -4,18 +4,21 @@ module.exports = (function(){
     var helper;
     var w;
     self._train = function(type, data, callback){
-
+        var worker;
         switch(type){
+            case 'nn':
+                worker = 'js/workers/train.js';
+                break;
             case 'knn':
-                w = new Worker('js/workers/knn.js');
+                worker = 'js/workers/knn.js';
                 break;
             case 'svm':
-                w = new Worker('js/workers/svm.js');
+                worker = 'js/workers/svm.js';
                 break;
             default:
-                if(!w)
-                w = new Worker('js/workers/train.js');
+                worker = 'js/workers/train.js';
         }
+        if(!w) w = new Worker(worker);
         w.onmessage = callback;
         w.postMessage(data);
         return w;
@@ -30,8 +33,8 @@ module.exports = (function(){
         helper.init(apikey);
     };
 
-    self.predict = function(callback){
-        helper.predict(callback);
+    self.predict = function(interval, callback){
+        helper.predict(interval, callback);
     };
 
     self.collect = function(name, callback){
@@ -44,6 +47,10 @@ module.exports = (function(){
 
     self.deleteDb = function() {
         helper.deleteDb();
+    };
+
+    self.deleteWifi = function(c){
+        helper.deleteWifi(c);
     };
 
     return self;

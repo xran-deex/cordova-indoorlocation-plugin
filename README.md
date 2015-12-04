@@ -1,3 +1,3 @@
-# cordova-machinelearning-plugin
+# cordova-indoorlocation-plugin
 
-Machine Learning plugin for Cordova
+Indoor Location Detection plugin for Cordova
