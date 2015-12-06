@@ -77,10 +77,9 @@ module.exports = function(){
     this.stop = function(){
         if(_export){
             _export = !_export;
-            var prefered = preferedWifi.data;
             self.start_sensor();
             // submit to the server
-            submitToServer(_name, prefered);
+            submitToServer(_name);
         }
         sensorcollector.stop('geomagnet', 'magnetic_field', function(){});
         sensorcollector.stop('wifi', null, function(){});
@@ -229,7 +228,6 @@ module.exports = function(){
             var network;
             m.request({method:'get', url: API_URL + '/default?apikey='+self.APIKEY}).then(function(res){
                 var network_type = res.type;
-                preferedWifi.data = res.preferedWifi;
                 trainer.train(network_type, {local: false, network: res.network, action: 'train'}, function(e){
                     console.log(e.data);
                     self.predictionCallback = callback;
@@ -259,7 +257,6 @@ module.exports = function(){
             self.locId = navigator.geolocation.watchPosition(self.handleGeolocation);
             cordova.plugins.backgroundMode.enable();
         } else {
-            preferedWifi.data = null;
             cordova.plugins.backgroundMode.disable();
         }
     };
@@ -267,14 +264,14 @@ module.exports = function(){
     /**
      *  @function submitToServer - submits the recently collected data to the api server
      */
-    var submitToServer = function(name, prefered){
+    var submitToServer = function(name){
         var request = new Request(API_URL + '/data', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({data:training_data, name: name, apikey: self.APIKEY, preferedWifi: prefered})
+            body: JSON.stringify({data:training_data, name: name, apikey: self.APIKEY})
         });
         fetch(request).then(function(res){return res.json();}).then(function(e){
             training_data.length = 0;
