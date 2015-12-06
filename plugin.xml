@@ -20,7 +20,11 @@
     </js-module>
     <js-module src="www/DbModel.js" name="DbModel">
     </js-module>
+    <js-module src="www/trainer.js" name="trainer">
+    </js-module>
     <js-module src="www/lib/bower_components/dexie/dist/latest/Dexie.js" name="Dexie">
+    </js-module>
+    <js-module src="www/lib/bower_components/mithril/mithril.js" name="mithril">
     </js-module>
     <asset src="www/workers" target="js/workers" />
     <asset src="www/lib" target="js/lib" />

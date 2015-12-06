@@ -1,8 +1,10 @@
 var processor = require('./processor');
 var DbModel = require('./DbModel');
+var trainer = require('./trainer');
 var DEXIE = require('./Dexie');
+var m = require('./mithril');
 var API_URL = 'http://valis.strangled.net/locationtracker';
-var DATA_LENGTH = 41;
+var DATA_LENGTH = 45;
 
 /**
  *  @function checkForCompleteDataSet
@@ -33,25 +35,26 @@ var preferedWifi = {
  *                                     if exporting, adds the dataset to the training_data array for later submission.
  */
 var handleCompleteDataSet = function(model, vm){
-    // always attempt to save any newly discovered wifi hotspot ids.
     if(_predict){
         processor.constructInputData(vm.WIFI_ACCESS_POINTS, model, vm, function(data){
-            //app.log(data);
             vm.dbModel.magnetic_field = null;
-            indoor._train('default', {data: data, action: 'predict'}, vm.handlePredictionResponse);
-            // create a new model if we are not exporting.
-            //vm.dbModel = new app.DbModel();
+            trainer.train('default', {data: data, action: 'predict'}, vm.handlePredictionResponse);
         }, preferedWifi);
     }
     if(_export){
         processor.constructInputData(vm.WIFI_ACCESS_POINTS, model, vm, function(data){
-            //app.log(data);
+            app.log(data);
             if(data.length !== DATA_LENGTH) return;
-            vm.collectCallback('Collected ' +(_collection_ctn++)+' values');
             training_data.push(data);
+            vm.collectCallback('Collected ' +(_collection_ctn++)+' values');
             vm.dbModel.magnetic_field = null;
         }, preferedWifi);
     }
+    if(!_export) {
+        // create a new model if we are not exporting.
+        vm.dbModel = new DbModel();
+    }
+    // always attempt to save any newly discovered wifi hotspot ids.
     processor.save_ssid(model.wifi, vm.WIFI_ACCESS_POINTS, vm.APIKEY);
 };
 
@@ -103,9 +106,11 @@ module.exports = function(){
                     self.WIFI_ACCESS_POINTS.set(item.name, item);
                 }
             });
+            console.log('wifi downloaded');
         });
         // grab our database reference
         self.setupDB();
+        console.log('init complete');
     };
 
     this.deleteDb = function(){
@@ -177,7 +182,6 @@ module.exports = function(){
 
     this.handlePredictionResponse = function(e){
         self.getPredictedName(e.data, function(name){
-            if(name)
             self.predictionCallback({predictedName: name, predictionData: e.data});
         });
     };
@@ -214,7 +218,7 @@ module.exports = function(){
         }, 500);
         self.magTimeout = setInterval(function(){
             self.readMagnet = true;
-        }, 100);
+        }, 500);
 
     };
 
@@ -229,7 +233,7 @@ module.exports = function(){
             m.request({method:'get', url: API_URL + '/default?apikey='+self.APIKEY}).then(function(res){
                 var network_type = res.type;
                 preferedWifi.data = res.preferedWifi;
-                indoor._train(network_type, {local: app.local(), network: res.network, action: 'train'}, function(e){
+                trainer.train(network_type, {local: false, network: res.network, action: 'train'}, function(e){
                     console.log(e.data);
                     self.predictionCallback = callback;
                     self.start_sensor(interval);
