@@ -26,9 +26,6 @@ _train = false;
 _collection_ctn = 0;
 // the current training set to submit to the server
 var training_data = [];
-var preferedWifi = {
-    data: null
-};
 
 /**
  *  @function handleCompleteDataSet - processes the complete data set. if predicting, sends it through the neural network,
@@ -39,7 +36,7 @@ var handleCompleteDataSet = function(model, vm){
         processor.constructInputData(vm.WIFI_ACCESS_POINTS, model, vm, function(data){
             vm.dbModel.magnetic_field = null;
             trainer.train('default', {data: data, action: 'predict'}, vm.handlePredictionResponse);
-        }, preferedWifi);
+        });
     }
     if(_export){
         processor.constructInputData(vm.WIFI_ACCESS_POINTS, model, vm, function(data){
@@ -48,7 +45,7 @@ var handleCompleteDataSet = function(model, vm){
             training_data.push(data);
             vm.collectCallback('Collected ' +(_collection_ctn++)+' values');
             vm.dbModel.magnetic_field = null;
-        }, preferedWifi);
+        });
     }
     if(!_export) {
         // create a new model if we are not exporting.
