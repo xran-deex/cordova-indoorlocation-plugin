@@ -3,7 +3,7 @@ var DbModel = require('./DbModel');
 var trainer = require('./trainer');
 var DEXIE = require('./Dexie');
 var m = require('./mithril');
-var API_URL = 'http://valis.strangled.net/locationtracker';
+var API_URL = 'https://valis.strangled.net/locationtracker';
 var DATA_LENGTH = 45;
 
 /**
